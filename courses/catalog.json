@@ -1,0 +1,33 @@
+{
+  "project": "AI时代的哲学思维",
+  "version": "0.1.0",
+  "courses": [
+    {
+      "id": "question-before-answer",
+      "title": "问题先于答案",
+      "description": "从一个看似简单的追问开始：当 AI 可以快速生成答案，我们还需要怎样提出问题？",
+      "tags": ["问题意识", "知识", "提问"],
+      "path": "./courses/01-question-before-answer/",
+      "status": "pending-source",
+      "statusLabel": "待接入课件"
+    },
+    {
+      "id": "human-and-model",
+      "title": "人与模型之间",
+      "description": "辨认模型输出、人的理解与现实世界之间的距离，重新安排工具的位置。",
+      "tags": ["AI关系", "理解", "现实"],
+      "path": "./courses/02-human-and-model/",
+      "status": "pending-source",
+      "statusLabel": "待接入课件"
+    },
+    {
+      "id": "judgement-and-responsibility",
+      "title": "判断与责任",
+      "description": "当选择会影响具体的人，哪些判断不能被自动化，哪些责任必须回到行动者身上？",
+      "tags": ["判断", "边界", "责任"],
+      "path": "./courses/03-judgement-and-responsibility/",
+      "status": "pending-source",
+      "statusLabel": "待接入课件"
+    }
+  ]
+}
