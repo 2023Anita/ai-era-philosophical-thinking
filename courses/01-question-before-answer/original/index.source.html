@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI时代的 Pace Layers｜公开课</title>
+<style>
+:root{
+  --bg:#fbf8ef;--paper:#fffdf6;--ink:#171915;--muted:#6f746d;--line:#20231f;
+  --blue:#9fb9c8;--blue-deep:#42677a;--sage:#aebea3;--sage-deep:#587155;
+  --orange:#e3aa68;--pink:#dcb5b2;--soft:#eee9dc;--shadow:0 18px 60px rgba(50,45,32,.12);
+  --font-sans:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  --font-serif:"Songti SC","STSong","Noto Serif CJK SC",serif;
+  --font-mono:"SFMono-Regular","Menlo","Monaco",monospace;
+  --ease:cubic-bezier(.22,.8,.25,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--font-sans)}
+body{letter-spacing:.01em}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden;background:var(--bg)}
+.slide{position:absolute;inset:0;padding:56px 72px 48px;display:flex;flex-direction:column;justify-content:center;opacity:0;pointer-events:none;transform:translateY(18px);transition:opacity .55s var(--ease),transform .55s var(--ease);overflow:hidden}
+.slide.is-active{opacity:1;pointer-events:auto;transform:none;z-index:2}
+.slide.is-prev{transform:translateY(-18px)}
+.slide::before{content:"";position:absolute;inset:18px;border:1.5px solid rgba(32,35,31,.14);border-radius:22px;pointer-events:none}
+.paper-grid{background-image:linear-gradient(rgba(40,50,44,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(40,50,44,.03) 1px,transparent 1px);background-size:32px 32px}
+h1,h2,h3,p{margin-top:0}
+h1{font-family:var(--font-serif);font-size:clamp(52px,6.4vw,94px);line-height:1.06;letter-spacing:-.055em;margin-bottom:22px}
+h2{font-family:var(--font-serif);font-size:clamp(36px,4.1vw,62px);line-height:1.12;letter-spacing:-.035em;margin-bottom:26px}
+h3{font-size:22px;line-height:1.4;margin-bottom:10px}
+p{font-size:20px;line-height:1.7}
+.kicker{font-family:var(--font-mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-deep);margin-bottom:16px}
+.lead{font-family:var(--font-serif);font-size:clamp(23px,2.2vw,34px);line-height:1.55;max-width:34em}
+.dim{color:var(--muted)}
+.accent{color:var(--blue-deep)}
+.sage{color:var(--sage-deep)}
+.orange{color:#9b5c27}
+.tiny{font-size:13px;line-height:1.55}
+.mono{font-family:var(--font-mono)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;min-height:0}
+.grid55{display:grid;grid-template-columns:1.12fr .88fr;gap:34px;align-items:center;min-height:0}
+.grid45{display:grid;grid-template-columns:.82fr 1.18fr;gap:34px;align-items:center;min-height:0}
+.card{background:rgba(255,253,246,.88);border:1.5px solid rgba(32,35,31,.18);border-radius:20px;padding:22px 24px;box-shadow:0 8px 30px rgba(50,45,32,.06)}
+.sketch-card{position:relative;background:rgba(255,253,246,.9);padding:22px 24px;border:1.5px solid var(--line);border-radius:18px;transform:rotate(-.3deg)}
+.sketch-card::after{content:"";position:absolute;inset:5px -5px -5px 5px;border:1px solid rgba(32,35,31,.22);border-radius:18px;z-index:-1}
+.image-frame{position:relative;border:1.5px solid rgba(32,35,31,.35);border-radius:22px;padding:9px;background:var(--paper);box-shadow:var(--shadow);overflow:hidden}
+.image-frame img{width:100%;height:100%;object-fit:cover;border-radius:15px;display:block}
+.image-frame.contain img{object-fit:contain;background:#faf8ef}
+.image-frame::before{content:"";position:absolute;width:76px;height:19px;background:rgba(227,170,104,.44);top:3px;left:50%;transform:translateX(-50%) rotate(-2deg);z-index:2}
+.hero-art{position:absolute;right:-2vw;bottom:-7vh;width:58vw;height:80vh;opacity:.82;filter:saturate(.85)}
+.hero-art img{width:100%;height:100%;object-fit:cover;object-position:center;border-radius:42% 0 0 0}
+.hero-copy{position:relative;z-index:2;width:57%;padding-left:2vw}
+.hero-copy .question{font-size:21px;line-height:1.55;max-width:32em;color:var(--muted)}
+.title-underline{position:relative;display:inline-block}
+.title-underline::after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:7px;background:var(--orange);opacity:.55;border-radius:50%;transform:rotate(-1deg) scaleX(0);transform-origin:left;animation:drawLine 1.2s .5s var(--ease) forwards}
+@keyframes drawLine{to{transform:rotate(-1deg) scaleX(1)}}
+.orbit{position:absolute;border:1px solid rgba(66,103,122,.25);border-radius:50%;pointer-events:none}.orbit.a{width:520px;height:520px;right:-120px;top:-180px;animation:drift 16s linear infinite}.orbit.b{width:360px;height:360px;right:-50px;top:-100px;animation:drift 11s linear reverse infinite}
+@keyframes drift{to{transform:rotate(360deg)}}
+.source-cover{padding:0;background:#000;color:#fff;justify-content:flex-end}
+.source-cover::before{inset:0;border:0;border-radius:0;background:linear-gradient(90deg,rgba(0,0,0,.76) 0%,rgba(0,0,0,.25) 54%,rgba(0,0,0,.06) 100%),linear-gradient(0deg,rgba(0,0,0,.86) 0%,transparent 58%);z-index:1}
+.source-cover .cover-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:coverZoom 18s ease-out both}
+.source-cover .cover-copy{position:relative;z-index:3;width:min(880px,68vw);padding:0 0 82px 82px}
+.source-cover .cover-copy h1{font-family:var(--font-serif);font-size:clamp(58px,6.6vw,96px);line-height:1.02;margin-bottom:22px;text-shadow:0 2px 28px rgba(0,0,0,.44)}
+.source-cover .cover-question{font-family:var(--font-serif);font-size:clamp(24px,2.25vw,35px);line-height:1.5;margin:0 0 22px;max-width:24em;color:rgba(255,255,255,.94)}
+.source-cover .cover-meta{display:flex;gap:12px;align-items:center;font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;color:rgba(255,255,255,.7)}
+.source-cover .cover-pill{position:absolute;z-index:3;top:36px;left:44px;border:1px solid rgba(255,255,255,.42);border-radius:999px;padding:7px 13px;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;background:rgba(0,0,0,.3);backdrop-filter:blur(8px)}
+.source-cover .footer{color:rgba(255,255,255,.58)}
+@keyframes coverZoom{from{transform:scale(1)}to{transform:scale(1.025)}}
+.source-map{display:grid;grid-template-columns:1fr 84px 1fr;gap:24px;align-items:stretch}
+.source-card{position:relative;display:grid;grid-template-columns:1fr 118px;gap:18px;min-height:330px;padding:28px;background:var(--paper);border:1.5px solid rgba(32,35,31,.28);border-radius:20px;box-shadow:var(--shadow)}
+.source-card::before{content:"";position:absolute;top:-8px;left:32px;width:72px;height:17px;background:rgba(227,170,104,.42);transform:rotate(-2deg)}
+.source-card h3{font-family:var(--font-serif);font-size:31px;margin-bottom:12px}
+.source-card p{font-size:16px;line-height:1.6;margin-bottom:10px;color:var(--muted)}
+.source-card ul{margin:12px 0 0;padding-left:19px;color:var(--muted);font-size:15px;line-height:1.8}
+.source-card .qr{align-self:end;text-align:center}.source-card .qr img{width:112px;height:112px;padding:6px;background:#fff;border:1px solid rgba(32,35,31,.18)}.source-card .qr span{display:block;margin-top:7px;font:10px var(--font-mono);color:var(--muted)}
+.source-bridge{display:flex;align-items:center;justify-content:center;font-size:42px;color:var(--blue-deep)}
+.source-question{margin:28px auto 0;padding:15px 28px;width:max-content;max-width:90%;border-bottom:2px solid var(--blue-deep);font-family:var(--font-serif);font-size:27px;text-align:center}
+.author-layout{display:grid;grid-template-columns:.72fr 1.28fr;gap:44px;align-items:center;min-height:0}
+.author-photo{height:68vh;position:relative}.author-photo img{width:100%;height:100%;object-fit:cover;object-position:center;border-radius:22px;filter:grayscale(1) contrast(.92);box-shadow:var(--shadow)}
+.author-photo::before{content:"";position:absolute;z-index:2;top:-7px;left:50%;width:84px;height:19px;background:rgba(227,170,104,.45);transform:translateX(-50%) rotate(-2deg)}
+.photo-credit{position:absolute;left:13px;right:13px;bottom:10px;padding:7px 10px;border-radius:8px;background:rgba(0,0,0,.55);color:rgba(255,255,255,.86);font:10px/1.4 var(--font-mono)}
+.author-intro{font-family:var(--font-serif);font-size:24px;line-height:1.55;margin-bottom:18px;color:var(--blue-deep)}
+.author-timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-top:20px}.author-year{padding:15px 13px 13px;border-top:2px solid var(--line);background:rgba(255,253,246,.65)}.author-year b{display:block;font:13px var(--font-mono);color:var(--blue-deep);margin-bottom:7px}.author-year span{font-size:14px;line-height:1.55;color:var(--muted)}
+.author-thesis{margin-top:18px;padding:17px 20px;border-left:5px solid var(--sage);background:rgba(174,190,163,.12);font-family:var(--font-serif);font-size:22px;line-height:1.5}
+.source-window{background:#fff;border:1.5px solid #2b2d29;border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.source-bar{height:34px;background:#f0eee7;border-bottom:1px solid #d6d0c3;display:flex;align-items:center;gap:7px;padding:0 14px}.dot{width:9px;height:9px;border-radius:50%;background:#c8c1b1}.source-body{padding:28px 34px}.source-body h3{font-family:var(--font-serif);font-size:31px}.source-body blockquote{font-family:var(--font-serif);font-size:25px;line-height:1.55;margin:22px 0;padding-left:22px;border-left:4px solid var(--blue)}
+.six-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 18px}.layer-item{display:flex;gap:12px;align-items:center;padding:11px 13px;border-bottom:1px dashed rgba(32,35,31,.22);font-size:17px}.layer-item b{font-family:var(--font-mono);font-size:12px;color:var(--blue-deep);min-width:30px}
+.quote{font-family:var(--font-serif);font-size:clamp(28px,3.2vw,48px);line-height:1.42}.quote small{display:block;margin-top:18px;font-family:var(--font-sans);font-size:14px;color:var(--muted)}
+.pace-stack{display:flex;flex-direction:column;gap:9px;margin-top:12px}.pace-row{display:grid;grid-template-columns:116px 1fr 86px;gap:14px;align-items:center}.pace-row .bar{height:38px;border:1.5px solid rgba(32,35,31,.32);border-radius:999px;background:var(--paper);position:relative;overflow:hidden}.pace-row .bar::after{content:"";position:absolute;inset:4px auto 4px 4px;border-radius:999px;background:var(--blue);width:var(--w);animation:pulseWidth var(--dur) ease-in-out infinite alternate}.pace-row:nth-child(n+4) .bar::after{background:var(--sage)}
+@keyframes pulseWidth{from{transform:scaleX(.93);transform-origin:left}to{transform:scaleX(1.03);transform-origin:left}}
+.pace-row span{font-size:16px}.pace-row em{font-style:normal;font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.equation{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:stretch}.eq-step{position:relative;padding:18px 12px;text-align:center;background:rgba(255,253,246,.85);border:1.5px solid rgba(32,35,31,.22);border-radius:16px;font-weight:650;font-size:17px}.eq-step:not(:last-child)::after{content:"→";position:absolute;right:-21px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--blue-deep);z-index:2}.eq-step small{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:6px}
+.four-lanes{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.lane{padding:18px 20px;border-left:5px solid var(--blue);background:rgba(255,253,246,.78);border-radius:0 16px 16px 0}.lane:nth-child(2){border-color:var(--sage)}.lane:nth-child(3){border-color:var(--orange)}.lane:nth-child(4){border-color:var(--pink)}.lane h3{font-family:var(--font-serif);font-size:25px}.lane p{font-size:15px;margin:0;color:var(--muted)}
+.roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:26px}.phase{position:relative;padding:25px 22px 22px;background:var(--paper);border:1.5px solid rgba(32,35,31,.25);border-radius:18px}.phase .day{font-family:var(--font-mono);font-size:13px;color:var(--blue-deep)}.phase h3{font-family:var(--font-serif);font-size:27px;margin:7px 0 10px}.phase p{font-size:16px;color:var(--muted);margin:0}.phase::before{content:"";position:absolute;top:-8px;left:24px;width:64px;height:16px;background:rgba(174,190,163,.45);transform:rotate(-2deg)}
+.takeaways{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:26px}.take{padding:24px 18px;border-top:2px solid var(--line)}.take strong{display:block;font-family:var(--font-serif);font-size:30px;margin-bottom:10px}.take p{font-size:17px;color:var(--muted)}
+.footer{position:absolute;left:48px;right:48px;bottom:24px;display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:11px;color:rgba(32,35,31,.48);z-index:5}.slide-number::before{content:attr(data-current)}.slide-number::after{content:" / " attr(data-total)}
+.notes{display:none!important}.notes-overlay{position:fixed;inset:auto 0 0;max-height:42vh;background:rgba(25,27,24,.96);color:#fff;padding:22px 34px;transform:translateY(100%);transition:.3s;z-index:40;overflow:auto}.notes-overlay.open{transform:none}.overview{position:fixed;inset:0;background:rgba(20,22,20,.94);z-index:50;display:none;padding:40px;overflow:auto}.overview.open{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-content:start}.overview .thumb{background:var(--paper);border-radius:12px;aspect-ratio:16/9;padding:18px;position:relative;cursor:pointer}.overview .n{font-weight:700}.overview .t{position:absolute;bottom:14px;left:14px;color:var(--ink);font-weight:650}.progress-bar{position:fixed;left:0;right:0;bottom:0;height:4px;z-index:20}.progress-bar span{display:block;height:100%;background:var(--blue-deep);transition:width .3s}
+.keyhelp{position:fixed;right:24px;top:18px;z-index:20;font:11px var(--font-mono);color:rgba(32,35,31,.42)}
+.reveal{opacity:0;transform:translateY(18px)}.slide.is-active .reveal{animation:reveal .75s var(--ease) forwards}.slide.is-active .d1{animation-delay:.12s}.slide.is-active .d2{animation-delay:.25s}.slide.is-active .d3{animation-delay:.38s}
+@keyframes reveal{to{opacity:1;transform:none}}
+@media(max-width:900px){.slide{padding:42px 38px}.grid2,.grid55,.grid45,.source-map,.author-layout{grid-template-columns:1fr}.hero-copy{width:82%}.hero-art{opacity:.3;width:90vw}.source-cover .cover-copy{width:84vw;padding:0 0 70px 44px}.source-bridge{display:none}.source-card{min-height:0}.author-photo{height:38vh}.author-timeline{grid-template-columns:repeat(2,1fr)}.image-frame{max-height:44vh}.four-lanes{grid-template-columns:1fr}.roadmap,.takeaways{grid-template-columns:1fr}.equation{grid-template-columns:1fr}.eq-step:not(:last-child)::after{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+@media print{html,body{overflow:visible}.deck{height:auto;overflow:visible}.slide{position:relative;opacity:1!important;transform:none!important;page-break-after:always;height:100vh}.keyhelp,.progress-bar{display:none}}
+</style>
+</head>
+<body class="tpl-presenter-mode-reveal">
+<div class="deck">
+
+  <section class="slide source-cover" data-title="封面 · 原文冷开场">
+    <img class="cover-shot" src="assets/source/jods-cover.png" alt="Journal of Design and Science 的 Pace Layering 原文页面封面截图">
+    <div class="cover-pill reveal">OPENING SOURCE · JoDS 2018</div>
+    <div class="cover-copy">
+      <h1 class="reveal d1">AI时代的<br><span class="title-underline">Pace Layers</span></h1>
+      <p class="cover-question reveal d2">技术越快，为什么越需要一套慢而可靠的系统？</p>
+      <div class="cover-meta reveal d3"><span>Stewart Brand</span><span>·</span><span>From civilization to a personal AI operating system</span></div>
+    </div>
+    <div class="footer"><span>Journal of Design and Science · Jan 18, 2018</span><span class="slide-number" data-current="1" data-total="15"></span></div>
+    <aside class="notes">
+      <p>今天我不想从某个 AI 模型，也不想从某个最新工具开始。我想先从一篇<strong>2018 年的文章</strong>开始。它讨论的原本不是 ChatGPT，也不是智能体，而是一个更底层的问题：一个复杂系统怎样在不断变化的同时，又不被变化撕碎？</p>
+      <p>Stewart Brand 给出的答案是：系统里的不同部分，本来就不应该以同一种速度变化。快的部分负责学习和试验，慢的部分负责记忆、约束和稳定。</p>
+      <p>这也引出今天真正要讨论的问题：当 AI 技术几乎每天都在变化时，我们应该跟着什么一起变？又应该把什么沉淀下来，保持稳定？如果所有东西都跟着模型一起快速变化，我们得到的可能不是能力，而是持续不断的重新学习。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="资料来源">
+    <p class="kicker">01 · TRACE THE IDEA</p>
+    <h2 class="reveal">先回到原始概念，再谈 AI</h2>
+    <div class="source-map reveal d1">
+      <div class="source-card">
+        <div>
+          <p class="tiny mono">CONCEPT MAP</p>
+          <h3>Wikipedia · Pace Layers</h3>
+          <p>用于快速建立概念地图：定义、起源、文明六层与后续应用。</p>
+          <ul><li>看全局结构</li><li>追溯建筑与生态来源</li><li>理解从快到慢的六层顺序</li></ul>
+          <p class="tiny mono" style="margin-top:15px">en.wikipedia.org/wiki/Pace_layers</p>
+        </div>
+        <a class="qr" href="https://en.wikipedia.org/wiki/Pace_layers" target="_blank" rel="noreferrer"><img src="assets/source/qr-wikipedia.png" alt="Wikipedia Pace Layers 二维码"><span>扫码查看概览</span></a>
+      </div>
+      <div class="source-bridge">→</div>
+      <div class="source-card">
+        <div>
+          <p class="tiny mono">PRIMARY SOURCE</p>
+          <h3>JoDS · Pace Layering</h3>
+          <p>课程的主要理论依据：不同速度层怎样相互制约，并让系统保持韧性。</p>
+          <ul><li>读作者原始论证</li><li>理解快层与慢层的职责</li><li>区分创新、稳定与系统健康</li></ul>
+          <p class="tiny mono" style="margin-top:15px">jods.mitpress.mit.edu/pub/issue3-brand/release/2</p>
+        </div>
+        <a class="qr" href="https://jods.mitpress.mit.edu/pub/issue3-brand/release/2" target="_blank" rel="noreferrer"><img src="assets/source/qr-jods.png" alt="JoDS Pace Layering 原文二维码"><span>扫码阅读原文</span></a>
+      </div>
+    </div>
+    <p class="source-question reveal d2">如果 AI 工具处在快层，个人能力体系中，什么应该留在慢层？</p>
+    <div class="footer"><span>Wikipedia 是地图 · JoDS 原文是证据</span><span class="slide-number" data-current="2" data-total="15"></span></div>
+    <aside class="notes">
+      <p>这里我放了两个来源。左边的 Wikipedia 是<strong>概念地图</strong>，帮助我们快速了解定义、历史和六层结构；右边的 JoDS 文章才是 Stewart Brand 的<strong>原始论证</strong>。</p>
+      <p>我们今天不是简单复述文章，而是要继续向前走一步：把文明的 Pace Layers 迁移到软件，再迁移到个人使用 AI 的方式。</p>
+      <p>所以我希望大家带着一个问题继续听：如果模型、应用和工具都在快层，那么什么东西必须留在慢层，才能让我们真正形成长期能力？</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="作者 · Stewart Brand">
+    <p class="kicker">02 · THE THINKER BEHIND THE MODEL</p>
+    <div class="author-layout">
+      <div class="author-photo reveal">
+        <img src="assets/source/stewart-brand-2020.jpg" alt="Stewart Brand 肖像">
+        <div class="photo-credit">Photo: Christopher Michel, 2020 · CC BY 2.0 · Wikimedia Commons · grayscale crop</div>
+      </div>
+      <div class="reveal d1">
+        <h2>谁提出了 Pace Layers？</h2>
+        <p class="author-intro">Stewart Brand：从“获得工具”，一路走向复杂系统与长期思考。</p>
+        <div class="author-timeline">
+          <div class="author-year"><b>1968</b><span>创办并主编《全球概览》<br>Whole Earth Catalog</span></div>
+          <div class="author-year"><b>1994</b><span>出版《建筑如何学习》<br>How Buildings Learn</span></div>
+          <div class="author-year"><b>1996</b><span>共同创立<br>Long Now Foundation</span></div>
+          <div class="author-year"><b>1999 → 2018</b><span>从《长久现在的时钟》到完整 Pace Layering 论述</span></div>
+        </div>
+        <div class="author-thesis">他不是 AI 科学家。但他长期研究的是：工具怎样改变个人，系统怎样适应变化，文明怎样进行长期思考。</div>
+      </div>
+    </div>
+    <div class="footer"><span>Stewart Brand · Whole Earth → Long Now</span><span class="slide-number" data-current="3" data-total="15"></span></div>
+    <aside class="notes">
+      <p>Stewart Brand 不是一位 AI 科学家，这恰恰是我觉得他值得出现在这里的原因。他从《全球概览》的“获得工具”，一路走到建筑、早期网络社区和 Long Now Foundation。</p>
+      <p>换句话说，他长期关心的是三个问题：工具怎样扩大个人能力，复杂系统怎样适应变化，以及我们怎样用更长的时间尺度作出判断。</p>
+      <p>Pace Layers 最初也不是凭空产生的。Brand 先从建筑观察到：家具、空间、管线、外墙和主体结构，本来就有不同寿命；随后才把这个模型扩展到文明。今天我们做同样的迁移：从文明到软件，再从软件迁移到我们自己的 AI 问题解决体系。接下来，我们先看看这六层到底是什么。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="文明六层">
+    <p class="kicker">03 · CIVILIZATION</p>
+    <div class="grid45">
+      <div class="image-frame reveal"><img src="assets/illustrations/01-six-layers.png" alt="六层速度日式手绘示意"></div>
+      <div class="reveal d1">
+        <h2>六个层次，<br>六种时间尺度</h2>
+        <div class="six-list">
+          <div class="layer-item"><b>01</b><span>时尚 / 艺术</span></div><div class="layer-item"><b>快</b><span>大量试错</span></div>
+          <div class="layer-item"><b>02</b><span>商业</span></div><div class="layer-item"><b>↘</b><span>筛选可行创新</span></div>
+          <div class="layer-item"><b>03</b><span>基础设施</span></div><div class="layer-item"><b>↘</b><span>提供长期能力</span></div>
+          <div class="layer-item"><b>04</b><span>治理</span></div><div class="layer-item"><b>↘</b><span>保持秩序与责任</span></div>
+          <div class="layer-item"><b>05</b><span>文化</span></div><div class="layer-item"><b>↘</b><span>保存价值与方向</span></div>
+          <div class="layer-item"><b>06</b><span>自然</span></div><div class="layer-item"><b>慢</b><span>规定最终边界</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>不是分类，而是时间结构</span><span class="slide-number" data-current="4" data-total="15"></span></div>
+    <aside class="notes">
+      <p>Brand 把文明分成六层：时尚、商业、基础设施、治理、文化和自然。越靠上变化越快，越靠下变化越慢，但影响也越深。</p>
+      <p>我们容易只看到热点，因为快层每天都在制造新闻；真正决定十年后结果的，往往是基础设施、制度、社会信任和自然条件。</p>
+      <p>所以 Pace Layers 不是一个漂亮的分类表，它首先是一张<strong>时间结构图</strong>：不同问题必须放到正确的时间尺度上判断。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="快与慢">
+    <p class="kicker">04 · FAST &amp; SLOW</p>
+    <div class="grid2">
+      <div class="reveal">
+        <p class="quote">“Fast learns, slow remembers.<br>Fast proposes, slow disposes.”<small>Stewart Brand · 2018</small></p>
+        <div class="sketch-card">
+          <h3>关键不是选快还是选慢</h3>
+          <p class="dim">而是让快层承担探索，让慢层承担筛选、记忆和稳定。</p>
+        </div>
+      </div>
+      <div class="image-frame reveal d1"><img src="assets/illustrations/02-fast-slow.png" alt="快层学习慢层记忆手绘图"></div>
+    </div>
+    <div class="footer"><span>快层学习 · 慢层记忆</span><span class="slide-number" data-current="5" data-total="15"></span></div>
+    <aside class="notes">
+      <p>原文最著名的一句话就是这一句：<strong>快层学习，慢层记忆；快层提出，慢层决定</strong>。我把它画成风筝和树根。</p>
+      <p>风筝可以快速改变方向，甚至掉下来也没有关系；树根不能天天搬家，因为它负责支撑整棵树。好的系统必须同时拥有风筝的探索性和树根的连续性。</p>
+      <p>接下来我们把这个模型从文明迁移到软件，再迁移到每个人自己的 AI 能力体系。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="软件 Pace Layers">
+    <p class="kicker">05 · SOFTWARE PACE LAYERS</p>
+    <div class="grid45">
+      <div class="image-frame contain reveal" style="height:74vh"><img src="assets/source/software-pace-layers.png" alt="用户提供的软件 pace layers 原图"></div>
+      <div class="reveal d1">
+        <h2>软件也有自己的<br>速度分层</h2>
+        <div class="pace-stack">
+          <div class="pace-row"><span>Intelligence</span><div class="bar" style="--w:92%;--dur:1.1s"></div><em>最快</em></div>
+          <div class="pace-row"><span>Apps</span><div class="bar" style="--w:78%;--dur:1.8s"></div><em>月 / 年</em></div>
+          <div class="pace-row"><span>Libraries</span><div class="bar" style="--w:66%;--dur:2.6s"></div><em>年</em></div>
+          <div class="pace-row"><span>Platforms</span><div class="bar" style="--w:54%;--dur:3.4s"></div><em>更慢</em></div>
+          <div class="pace-row"><span>Protocols</span><div class="bar" style="--w:40%;--dur:4.2s"></div><em>稳定</em></div>
+          <div class="pace-row"><span>Formats</span><div class="bar" style="--w:28%;--dur:5s"></div><em>最慢</em></div>
+        </div>
+        <p class="tiny dim" style="margin-top:18px">图源：@kepano，adapted from Stewart Brand（用户提供）</p>
+      </div>
+    </div>
+    <div class="footer"><span>软件的上层快，下层慢</span><span class="slide-number" data-current="6" data-total="15"></span></div>
+    <aside class="notes">
+      <p>这张图把 Pace Layers 搬到了软件世界。最上面是 intelligence，变化非常快；再往下是应用、库、平台、协议和格式，速度逐渐放慢。</p>
+      <p>这个图真正有价值的地方是提醒我们：<strong>不要把全部能力绑在最快的一层</strong>。如果一个工作流只能依赖某个模型、某个按钮或某个插件，一旦工具变化，能力就跟着消失。</p>
+      <p>好的工程应该反过来：上层工具可以换，但任务接口、数据格式、验证标准和最终成果仍然成立。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="个人 AI 六层">
+    <p class="kicker">06 · PERSONAL AI PACE LAYERS</p>
+    <h2 class="reveal">把模型迁移到个人：<span class="accent">什么应该快，什么必须慢？</span></h2>
+    <div class="pace-stack reveal d1" style="max-width:1060px;margin-left:auto;margin-right:auto;width:100%">
+      <div class="pace-row"><span>新模型 / 新工具</span><div class="bar" style="--w:94%;--dur:1.1s"></div><em>快速试验</em></div>
+      <div class="pace-row"><span>Prompt / 技巧</span><div class="bar" style="--w:82%;--dur:1.7s"></div><em>随时替换</em></div>
+      <div class="pace-row"><span>工作流 / Skill</span><div class="bar" style="--w:68%;--dur:2.5s"></div><em>小步迭代</em></div>
+      <div class="pace-row"><span>证据 / 验证 / 状态</span><div class="bar" style="--w:54%;--dur:3.5s"></div><em>保持稳定</em></div>
+      <div class="pace-row"><span>专业标准 / 价值</span><div class="bar" style="--w:42%;--dur:4.4s"></div><em>谨慎改变</em></div>
+      <div class="pace-row"><span>人的责任与边界</span><div class="bar" style="--w:28%;--dur:5.2s"></div><em>不可外包</em></div>
+    </div>
+    <p class="lead reveal d2" style="margin:28px auto 0;text-align:center">让工具在快层竞争，让判断、证据和责任在慢层沉淀。</p>
+    <div class="footer"><span>个人 AI 能力不是工具清单</span><span class="slide-number" data-current="7" data-total="15"></span></div>
+    <aside class="notes">
+      <p>如果把 Pace Layers 用在个人身上，我会分成六层。最上面是模型和工具，它们应该快速试验；再往下是提示方法、工作流和 Skill。</p>
+      <p>真正需要稳定的是证据、验证、状态、专业标准和责任边界。尤其在医疗、研究和公开内容里，最终判断不能因为新模型很强就外包出去。</p>
+      <p>所以我的目标不是建立一座“工具博物馆”，而是建立一个<strong>工具可以替换、能力能够积累</strong>的系统。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="快速学习的正确路径">
+    <p class="kicker">07 · LEARN FAST, FILTER HARD</p>
+    <div class="grid45">
+      <div class="image-frame reveal"><img src="assets/illustrations/06-cross-domain-learning.png" alt="跨领域学习经真实问题验证后沉淀的手绘图"></div>
+      <div class="reveal d1">
+        <h2>快速掌握前沿，<br>但不要快速沉淀</h2>
+        <div class="sketch-card">
+          <p class="lead" style="font-size:26px;margin:0">AI 新技术 + 跨专业信息<br><span class="accent">必须先经过真实问题</span></p>
+        </div>
+        <p class="dim" style="margin-top:22px">医学、研究、教育、工程、内容，可以互相启发；但只有改变了下一次执行方式的知识，才算进入体系。</p>
+      </div>
+    </div>
+    <div class="footer"><span>学习是输入，改变系统才是沉淀</span><span class="slide-number" data-current="8" data-total="15"></span></div>
+    <aside class="notes">
+      <p>这里是对“快速学习”的第一个校准。我们当然要快速掌握 AI 新技术，也要主动阅读医学、研究、教育、工程和内容领域的前沿信息。</p>
+      <p>但是，<strong>快速学习不等于快速把它写进长期体系</strong>。新知识要先回答三个问题：它解决什么真实问题？改变哪个步骤？经过什么验证？</p>
+      <p>如果它没有改变下一次任务的执行方式，它还只是信息；只有验证后进入模板、规则、Skill 或检查清单，它才变成能力。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="第一性原理">
+    <p class="kicker">08 · FIRST PRINCIPLES</p>
+    <div class="grid45">
+      <div class="image-frame reveal"><img src="assets/illustrations/04-first-principles.png" alt="把复杂 AI 机器拆到真实目标证据约束和最小验证的手绘图"></div>
+      <div class="reveal d1">
+        <p class="quote">“Reason from first principles rather than by analogy.”<small>Elon Musk · APS interview, 2013</small></p>
+        <div class="sketch-card">
+          <h3>第一性原理不是“大胆创新”</h3>
+          <p class="dim">它是先拆掉惯例：真实目标是什么？确定事实是什么？现实约束是什么？最小验证是什么？然后从底层重新组合。</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>不是照搬最佳实践，而是重建必要结构</span><span class="slide-number" data-current="9" data-total="15"></span></div>
+    <aside class="notes">
+      <p>马斯克在美国物理学会的访谈里强调，要从第一性原理推理，而不是只靠类比。网络上经常把它讲成“敢于颠覆”，但这还不够准确。</p>
+      <p>第一性原理首先是一种拆解纪律：<strong>真实目标、已知事实、现实约束、最小验证</strong>。把“别人都这样做”暂时放到一边，再从这些基础事实重新组合方案。</p>
+      <p>对 AI 工作流也是一样。我们不应该因为别人有十个 Agent，就复制十个 Agent；先问当前问题是否真的需要它们。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="从工具到工作流">
+    <p class="kicker">09 · FROM TOOLS TO WORKFLOW</p>
+    <div class="grid55">
+      <div class="reveal">
+        <h2>真正的跃迁：<br><span class="accent">从会用工具，到可复用成果</span></h2>
+        <div class="equation">
+          <div class="eq-step">问题定义<small>交付是什么</small></div>
+          <div class="eq-step">上下文<small>证据与边界</small></div>
+          <div class="eq-step">执行<small>AI 与工具</small></div>
+          <div class="eq-step">验证<small>标准与检查</small></div>
+          <div class="eq-step">沉淀<small>模板与记忆</small></div>
+        </div>
+        <p class="lead" style="margin-top:28px;font-size:26px">工程化的对象不是工具，而是<span class="sage">稳定产生结果的路径</span>。</p>
+      </div>
+      <div class="image-frame reveal d1"><img src="assets/illustrations/03-tools-to-workflow.png" alt="零散工具形成共同工作流的手绘图"></div>
+    </div>
+    <div class="footer"><span>可重复路径 &gt; 工具数量</span><span class="slide-number" data-current="10" data-total="15"></span></div>
+    <aside class="notes">
+      <p>所以真正的跃迁，不是从三个工具增加到三十个工具，而是从“这次会做”变成“下次还能做好”。</p>
+      <p>一条可靠路径至少包含五步：定义问题、准备上下文、执行、验证、沉淀。工具主要待在执行层，不能反过来主导整个系统。</p>
+      <p>工程化的核心也不是把流程做复杂，而是让重要步骤<strong>看得见、能检查、可重跑、可交接</strong>。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="个人 AI 操作系统">
+    <p class="kicker">10 · PERSONAL AI OPERATING SYSTEM</p>
+    <div class="grid45">
+      <div class="image-frame reveal"><img src="assets/illustrations/05-personal-ai-os.png" alt="个人 AI 操作系统六站点手绘图"></div>
+      <div class="reveal d1">
+        <h2>一套会学习的<br>个人 AI 操作系统</h2>
+        <div class="six-list">
+          <div class="layer-item"><b>01</b><span>问题入口</span></div><div class="layer-item"><b>02</b><span>证据与上下文</span></div>
+          <div class="layer-item"><b>03</b><span>执行与编排</span></div><div class="layer-item"><b>04</b><span>验证与质控</span></div>
+          <div class="layer-item"><b>05</b><span>可用交付</span></div><div class="layer-item"><b>06</b><span>复盘与记忆</span></div>
+        </div>
+        <p class="dim" style="margin-top:20px">工具可换，六个职责不丢；模型升级，系统无需推倒重来。</p>
+      </div>
+    </div>
+    <div class="footer"><span>稳定职责 · 可替换实现</span><span class="slide-number" data-current="11" data-total="15"></span></div>
+    <aside class="notes">
+      <p>我把这套底座叫作个人 AI 操作系统。它不是一个软件，而是六个稳定职责：问题、证据、执行、验证、交付和记忆。</p>
+      <p>模型可以更新，执行工具可以更换，但这六个职责不应该丢。否则每换一次工具，我们就要重新学习怎样定义问题、怎样验证结果。</p>
+      <p>最关键的是最后一站：复盘和记忆。一次任务结束后，只有少量经过验证、长期有效的经验才进入慢层，系统才会越用越强。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="我的应用场景">
+    <p class="kicker">11 · MY REAL-WORLD LANES</p>
+    <h2 class="reveal">不同专业场景，复用同一个底层骨架</h2>
+    <div class="grid2">
+      <div class="four-lanes reveal d1">
+        <div class="lane"><h3>医学研究</h3><p>问题 → 文献证据 → 数据与分析 → 稿件 → 方法学核验</p></div>
+        <div class="lane"><h3>教学课件</h3><p>受众 → 学习目标 → 分层解释 → 图像 → 成品 → 教学检查</p></div>
+        <div class="lane"><h3>医院方案</h3><p>现实问题 → 政策依据 → 组织流程 → 指标责任 → 可编辑交付</p></div>
+        <div class="lane"><h3>内容与工程</h3><p>来源 → 事实台账 → 草稿 / 实现 → 验证 → 发布 / 交付</p></div>
+      </div>
+      <div class="sketch-card reveal d2">
+        <p class="quote" style="font-size:34px">表面上，我在做不同项目。<br>底层上，我一直在做同一件事：</p>
+        <p class="lead" style="font-size:26px;color:var(--blue-deep)">把模糊需求转化成结构化任务，再把 AI 输出转化成可信、可验证、可交付的成果。</p>
+      </div>
+    </div>
+    <div class="footer"><span>专业内容不同，系统骨架相同</span><span class="slide-number" data-current="12" data-total="15"></span></div>
+    <aside class="notes">
+      <p>结合我自己的工作，这套系统并不是抽象概念。我做医学研究、教学课件、医院方案、内容生产和 Agent 工程，看起来跨度很大。</p>
+      <p>但是底层骨架高度相似：都要定义真实问题，准备证据，组织执行，进行专业验证，形成可用成果，最后把经验沉淀下来。</p>
+      <p>跨专业的意义不只是知道得更多，而是发现<strong>不同领域可以复用的深层结构</strong>。这也是 AI 最适合放大的能力。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="可靠工程">
+    <p class="kicker">12 · RELIABLE ENGINEERING</p>
+    <div class="grid45">
+      <div class="image-frame reveal"><img src="assets/illustrations/07-reliable-engineering.png" alt="证据测试检查点人工确认保护稳定复刻的手绘图"></div>
+      <div class="reveal d1">
+        <h2>稳定不是不变，<br>而是<span class="accent">结果可复刻</span></h2>
+        <div class="sketch-card">
+          <h3>四根工程护栏</h3>
+          <p class="dim">证据可追溯 · 测试可重复 · 状态有检查点 · 高风险动作有人确认</p>
+        </div>
+        <p class="lead" style="font-size:27px;margin-top:22px">模型可以天天变，但同一输入不应该每次得到完全不可解释的交付。</p>
+      </div>
+    </div>
+    <div class="footer"><span>证据 · 测试 · 检查点 · 人工确认</span><span class="slide-number" data-current="13" data-total="15"></span></div>
+    <aside class="notes">
+      <p>工程化最容易被误解成把一切写成复杂代码。其实工程化首先是<strong>可靠性设计</strong>：我们知道输入是什么，过程在哪里，结果怎样检查，失败以后怎样恢复。</p>
+      <p>我把它浓缩成四根护栏：证据、测试、检查点和人工确认。尤其是医学、隐私、发布和外部操作，不能因为 AI 更快就取消责任边界。</p>
+      <p>稳定的不是某个模型，而是结果的可解释性和可复刻性。工具在伞外变化，工作台在伞下持续生产可信成果。</p>
+    </aside>
+  </section>
+
+  <section class="slide" data-title="90 天行动方案">
+    <p class="kicker">13 · 90-DAY PRACTICE</p>
+    <h2 class="reveal">把理念变成一个可执行的 90 天循环</h2>
+    <div class="roadmap reveal d1">
+      <div class="phase"><span class="day">DAY 1–30</span><h3>收窄</h3><p>选 3 个最高频真实任务；记录输入、交付、失败点和人工判断，不急着增加工具。</p></div>
+      <div class="phase"><span class="day">DAY 31–60</span><h3>工程化</h3><p>为每条任务建立统一入口、证据清单、验证标准、状态记录和可重复输出。</p></div>
+      <div class="phase"><span class="day">DAY 61–90</span><h3>升级</h3><p>用新模型和跨专业知识做受控实验；只有验证通过的改进，才进入长期体系。</p></div>
+    </div>
+    <div class="equation reveal d2" style="margin-top:34px">
+      <div class="eq-step">快速学习<small>发现可能</small></div>
+      <div class="eq-step">第一性拆解<small>去掉惯例</small></div>
+      <div class="eq-step">真实验证<small>证据说话</small></div>
+      <div class="eq-step">工程固化<small>稳定复刻</small></div>
+      <div class="eq-step">周期复盘<small>继续进化</small></div>
+    </div>
+    <div class="footer"><span>少量试新 · 重点固化 · 周期复盘</span><span class="slide-number" data-current="14" data-total="15"></span></div>
+    <aside class="notes">
+      <p>最后给一个可以真正开始的九十天方案。前一个月不要继续铺很多新工具，只选三个最高频、最有价值的真实任务，把输入、交付和失败点记录下来。</p>
+      <p>第二个月开始工程化：统一入口、证据、验证、状态和输出。第三个月再让新模型、新技术和跨专业知识进入，做受控实验。</p>
+      <p>只有通过真实验证的改进才进入长期体系。这样我们既不会错过前沿，也不会让整个系统被每一次热点带走。</p>
+    </aside>
+  </section>
+
+  <section class="slide paper-grid" data-title="结语">
+    <p class="kicker reveal">FINAL · TAKEAWAYS</p>
+    <h2 class="reveal d1">AI 时代真正稀缺的，<br>不是知道得快，而是<span class="title-underline">沉淀得对</span>。</h2>
+    <div class="takeaways reveal d2">
+      <div class="take"><strong>快层</strong><p>保持好奇，快速学习模型、工具和跨专业前沿。</p></div>
+      <div class="take"><strong>中层</strong><p>用第一性原理和真实验证，把知识变成工程化工作流。</p></div>
+      <div class="take"><strong>慢层</strong><p>守住证据、专业标准、价值判断、责任和人的边界。</p></div>
+    </div>
+    <p class="lead reveal d3" style="margin:34px auto 0;text-align:center;max-width:40em">让 AI 的变化发生在快层，让你的方法、标准、判断和知识资产沉淀在慢层。</p>
+    <div class="footer"><span>Q&amp;A · AI时代的 Pace Layers</span><span class="slide-number" data-current="15" data-total="15"></span></div>
+    <aside class="notes">
+      <p>我最后用三句话收束。第一，快层要保持好奇，我们当然要快速学习 AI 和跨专业前沿。第二，中层要工程化，用第一性原理和真实验证把知识变成稳定路径。</p>
+      <p>第三，慢层要守住证据、专业标准、价值判断、责任和人的边界。AI 可以帮助我们扩大能力，但不能替我们承担最终责任。</p>
+      <p>所以，AI 时代真正稀缺的不是知道得快，而是<strong>沉淀得对</strong>。谢谢大家，接下来我们可以讨论：你自己的工作里，哪些应该快，哪些必须慢？</p>
+    </aside>
+  </section>
+
+</div>
+<div class="progress-bar"><span></span></div>
+<div class="keyhelp">← → 翻页 · F 全屏 · O 总览 · N 讲稿 · S 演讲者视图</div>
+<script src="__RUNTIME_JS__"></script>
+</body>
+</html>

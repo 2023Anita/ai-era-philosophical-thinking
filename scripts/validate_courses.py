@@ -26,7 +26,7 @@ def main() -> int:
 
     for course in courses:
         course_id = course.get("id", "<missing id>")
-        for field in ("title", "description", "path"):
+        for field in ("title", "description", "path", "cover"):
             if not course.get(field):
                 errors.append(f"{course_id}: missing {field}")
 
@@ -36,6 +36,10 @@ def main() -> int:
             errors.append(f"{course_id}: missing directory {relative_path}")
         elif not (course_dir / "index.html").is_file():
             errors.append(f"{course_id}: missing index.html")
+
+        cover_path = str(course.get("cover", "")).removeprefix("./")
+        if cover_path and not (ROOT / cover_path).is_file():
+            errors.append(f"{course_id}: missing cover {cover_path}")
 
     if errors:
         print("FAIL")

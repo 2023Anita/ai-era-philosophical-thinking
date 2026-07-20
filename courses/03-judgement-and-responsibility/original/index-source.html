@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>你不是缺少意志力｜公开课</title>
+  <style>
+    :root{
+      --paper:#f7f2e8;--paper-2:#fffdf8;--ink:#252822;--muted:#6d7169;
+      --brick:#9d493b;--sage:#7f9478;--blue:#7f9ba3;--orange:#d89558;
+      --line:rgba(37,40,34,.17);--soft:rgba(255,253,248,.82);
+      --shadow:0 24px 70px rgba(56,48,35,.14);--radius:28px;
+    }
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#ddd6c9;color:var(--ink)}
+    body{font-family:"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",Arial,sans-serif}
+    button{font:inherit;color:inherit}
+    .deck{position:relative;width:100vw;height:100vh;isolation:isolate;background:var(--paper)}
+    .deck::before{content:"";position:absolute;inset:0;z-index:-2;background:
+      radial-gradient(circle at 8% 10%,rgba(216,149,88,.10),transparent 28%),
+      radial-gradient(circle at 90% 82%,rgba(127,148,120,.12),transparent 30%),var(--paper)}
+    .deck::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.28;pointer-events:none;
+      background-image:linear-gradient(rgba(37,40,34,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(37,40,34,.025) 1px,transparent 1px);
+      background-size:42px 42px;mask-image:linear-gradient(to bottom,transparent,black 18%,black 82%,transparent)}
+    .slide{position:absolute;inset:0;display:grid;grid-template-rows:auto 1fr auto;gap:24px;
+      padding:clamp(28px,4vw,64px) clamp(30px,6vw,96px) clamp(28px,4vw,58px);
+      opacity:0;visibility:hidden;transform:translateY(18px) scale(.992);transition:opacity .52s ease,transform .52s ease;overflow:hidden}
+    .slide.is-active{opacity:1;visibility:visible;transform:none;z-index:2}
+    .topline,.footline{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--brick)}
+    .brand i{width:28px;height:2px;background:var(--brick);display:inline-block}
+    .page-no{font-family:Georgia,serif;font-size:14px;color:var(--brick)}
+    .content{min-height:0;display:flex;align-items:center}
+    .split{width:100%;display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:clamp(26px,5vw,82px);align-items:center}
+    .split.reverse{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr)}
+    .copy{position:relative;z-index:2}
+    .eyebrow{margin:0 0 14px;color:var(--brick);font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-family:Georgia,"Songti SC","STSong",serif;font-size:clamp(44px,5.7vw,92px);line-height:1.08;letter-spacing:-.04em;margin-bottom:24px;font-weight:700}
+    h2{font-family:Georgia,"Songti SC","STSong",serif;font-size:clamp(34px,4.1vw,66px);line-height:1.13;letter-spacing:-.035em;margin-bottom:20px}
+    h3{font-size:clamp(20px,2vw,30px);line-height:1.25;margin-bottom:10px}
+    .accent{color:var(--brick);position:relative;white-space:nowrap}
+    .accent::after{content:"";position:absolute;left:-2%;right:-2%;bottom:.05em;height:.15em;background:rgba(216,149,88,.28);z-index:-1;transform:rotate(-1deg)}
+    .lede{font-size:clamp(17px,1.6vw,25px);line-height:1.72;color:#4e534c;max-width:780px}
+    .quote{font-family:Georgia,"Songti SC","STSong",serif;font-size:clamp(22px,2.35vw,38px);line-height:1.55;border-left:4px solid var(--brick);padding-left:24px;margin:26px 0;color:#343832}
+    .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .chip{border:1px solid var(--line);background:rgba(255,253,248,.72);padding:9px 14px;border-radius:999px;font-size:13px;color:#555b53}
+    .figure{position:relative;margin:0;min-height:0;border-radius:var(--radius);overflow:hidden;background:rgba(255,253,248,.72);box-shadow:var(--shadow);border:1px solid rgba(37,40,34,.09)}
+    .figure img{display:block;width:100%;height:auto;max-height:68vh;object-fit:cover}
+    .figure.contain img{object-fit:contain;background:#faf6ed}
+    .figure::after{content:"";position:absolute;inset:0;border:1px solid rgba(255,255,255,.66);border-radius:inherit;pointer-events:none}
+    .caption{position:absolute;left:18px;bottom:16px;padding:8px 12px;background:rgba(255,253,248,.88);backdrop-filter:blur(6px);border-radius:999px;font-size:12px;color:var(--muted);border:1px solid rgba(37,40,34,.10)}
+    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:25px}
+    .card{padding:19px 20px;border-radius:20px;background:rgba(255,253,248,.73);border:1px solid var(--line);box-shadow:0 12px 30px rgba(56,48,35,.06)}
+    .card b{display:block;color:var(--brick);margin-bottom:6px}
+    .card p{margin:0;color:var(--muted);line-height:1.55;font-size:14px}
+    .myths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px}
+    .myth{display:flex;gap:12px;align-items:flex-start;padding:16px;border-bottom:1px dashed var(--line);font-size:clamp(15px,1.3vw,20px)}
+    .myth i{font-style:normal;color:var(--brick);font-weight:800}
+    .formula{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:26px}
+    .step{padding:13px 16px;border-radius:14px;background:var(--soft);border:1px solid var(--line);font-weight:700;font-size:clamp(14px,1.2vw,18px)}
+    .arrow{color:var(--orange);font-size:22px}
+    .big-number{font-family:Georgia,serif;font-size:clamp(86px,11vw,176px);line-height:.8;color:rgba(157,73,59,.12);position:absolute;right:-8px;top:-20px;z-index:-1}
+    .action-panel{padding:22px;border-radius:24px;border:1px solid var(--line);background:rgba(255,253,248,.78);margin-top:22px}
+    .action-panel ol{margin:10px 0 0;padding-left:22px;line-height:1.85;color:#535850}
+    .final-grid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+    .final-lines{display:grid;gap:16px;margin-top:26px}
+    .final-line{display:grid;grid-template-columns:56px 1fr;gap:16px;align-items:center;font-size:clamp(18px,1.8vw,28px)}
+    .final-line span:first-child{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--paper-2);border:1px solid var(--line);color:var(--brick);font-family:Georgia,serif}
+    .notes{display:none}
+    .controls{position:fixed;right:18px;bottom:16px;z-index:20;display:flex;gap:8px;align-items:center}
+    .control{width:38px;height:38px;border-radius:50%;border:1px solid rgba(37,40,34,.15);background:rgba(255,253,248,.82);backdrop-filter:blur(8px);cursor:pointer;display:grid;place-items:center;transition:.2s ease}
+    .control:hover{transform:translateY(-2px);border-color:var(--brick);color:var(--brick)}
+    .progress{position:fixed;left:0;right:0;bottom:0;height:4px;background:rgba(37,40,34,.07);z-index:30}
+    .progress span{display:block;height:100%;width:10%;background:linear-gradient(90deg,var(--brick),var(--orange),var(--sage));transition:width .4s ease}
+    .hint{position:fixed;left:18px;bottom:16px;z-index:20;color:rgba(37,40,34,.48);font-size:11px;letter-spacing:.05em}
+    .drawer{position:fixed;inset:auto 18px 66px 18px;max-height:42vh;z-index:50;display:none;grid-template-columns:1fr 1fr;gap:18px;padding:22px;border-radius:24px;background:rgba(31,34,29,.94);color:#f5f0e7;box-shadow:0 26px 90px rgba(0,0,0,.28);backdrop-filter:blur(14px);overflow:auto}
+    .drawer.open{display:grid;animation:drawerIn .28s ease both}
+    .drawer h4{margin:0 0 12px;color:#e5b37a;letter-spacing:.12em;text-transform:uppercase;font-size:12px}
+    .drawer .script{font-size:16px;line-height:1.72}.drawer .script p{margin:0 0 10px}
+    .drawer .next{border-left:1px solid rgba(255,255,255,.13);padding-left:18px;color:#d9ddd5}
+    .drawer .timer{font-family:Georgia,serif;font-size:34px;color:#fff;margin-top:16px}
+    .overview{position:fixed;inset:0;z-index:80;background:rgba(34,36,31,.94);display:none;padding:32px;overflow:auto}
+    .overview.open{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;align-content:start}
+    .thumb{aspect-ratio:16/9;border-radius:18px;background:#f7f2e8;border:2px solid transparent;padding:18px;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;transition:.2s}
+    .thumb:hover,.thumb.current{border-color:#d89558;transform:translateY(-3px)}
+    .thumb b{font-family:Georgia,"Songti SC",serif;font-size:22px}.thumb span{color:var(--brick);font-size:12px}
+    .spark{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--orange);opacity:0;pointer-events:none}
+    .is-active .spark{animation:spark 1.8s ease-out infinite}
+    .is-active [data-anim="rise"]{animation:rise .7s .08s both}
+    .is-active [data-anim="fade"]{animation:fade .8s .28s both}
+    .is-active [data-anim="stagger"]>*{animation:rise .55s both}
+    .is-active [data-anim="stagger"]>*:nth-child(2){animation-delay:.12s}.is-active [data-anim="stagger"]>*:nth-child(3){animation-delay:.24s}.is-active [data-anim="stagger"]>*:nth-child(4){animation-delay:.36s}
+    .is-active .figure{animation:imageIn .9s .12s both}
+    .is-active .fuel-fill{animation:fuel 1.6s .6s both}
+    @keyframes rise{from{opacity:0;transform:translateY(28px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+    @keyframes fade{from{opacity:0}to{opacity:1}}
+    @keyframes imageIn{from{opacity:0;transform:translateX(34px) rotate(.4deg)}to{opacity:1;transform:none}}
+    @keyframes drawerIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+    @keyframes spark{0%{opacity:0;transform:translate(0,0) scale(.3)}30%{opacity:.8}100%{opacity:0;transform:translate(70px,-45px) scale(1.2)}}
+    @keyframes fuel{from{width:8%}to{width:72%}}
+    @media(max-width:900px){
+      .slide{overflow:auto;padding:24px 24px 58px}.split,.split.reverse,.final-grid{grid-template-columns:1fr;gap:22px}.content{align-items:flex-start}.figure img{max-height:45vh}.cards,.myths{grid-template-columns:1fr}.topline{position:sticky;top:0;background:rgba(247,242,232,.8);backdrop-filter:blur(8px);z-index:5;padding:6px 0}.drawer{grid-template-columns:1fr}.drawer .next{border-left:0;border-top:1px solid rgba(255,255,255,.13);padding:16px 0 0}.hint{display:none}
+    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+    @media print{
+      html,body{overflow:visible;background:white}.deck{height:auto;background:white}.deck::before,.deck::after,.controls,.progress,.hint,.drawer,.overview{display:none!important}.slide{position:relative;opacity:1;visibility:visible;transform:none;width:100%;height:100vh;page-break-after:always}.figure{box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+<main class="deck" aria-live="polite">
+  <section class="slide is-active" data-title="你不是缺少意志力">
+    <div class="topline"><div class="brand"><i></i>PUBLIC CLASS · ANITA</div><div>Design Better Choices</div></div>
+    <div class="content">
+      <div class="split">
+        <div class="copy">
+          <p class="eyebrow" data-anim="rise">Human-centered learning</p>
+          <h1 data-anim="rise">你不是缺少<br><span class="accent">意志力</span></h1>
+          <p class="lede" data-anim="fade">真正有效的改变，是顺着人性设计行动。</p>
+          <div class="chips" data-anim="stagger"><span class="chip">兴趣负责启动</span><span class="chip">成就感提供续航</span><span class="chip">环境降低阻力</span></div>
+        </div>
+        <figure class="figure"><img src="assets/illustrations/01-choose-the-easier-road.png" alt="小旅人调整路标，在硬撑的陡坡和顺着人性的平缓道路之间做选择"><span class="caption">不是更能忍，而是更懂得设计路径</span></figure>
+      </div>
+    </div>
+    <div class="footline"><span>从“逼自己坚持”到“让正确行为更容易发生”</span><span class="page-no">01 / 10</span></div>
+    <aside class="notes"><p>今天我不想教大家怎样变得更“狠”，也不想再重复“坚持就是胜利”。我更想讨论一个现实问题：为什么我们明明很想改变，却总是在几天以后停下来？</p><p>我的判断是，很多时候你不是缺少意志力，而是把正确的事情设计得太难发生。我们习惯责怪自己，却很少回头看一看：入口是不是太复杂，反馈是不是太慢，第一步是不是大得让人根本不想开始。</p><p>这节课只有一个目标：把“逼自己坚持”改成“让自己愿意继续”。</p></aside>
+  </section>
+
+  <section class="slide" data-title="我们为什么总责怪自己">
+    <div class="topline"><div class="brand"><i></i>01 · THE WRONG QUESTION</div><div>System before self-blame</div></div>
+    <div class="content">
+      <div class="split reverse">
+        <figure class="figure"><img src="assets/illustrations/01-choose-the-easier-road.png" alt="硬撑路线和顺着人性的路线对比"><span class="caption">同一个人，不同的路径设计</span></figure>
+        <div class="copy">
+          <p class="eyebrow">先纠正一个误解</p>
+          <h2>我们把“系统没设计好”，<br>误认为“<span class="accent">自己不够好</span>”。</h2>
+          <div class="myths" data-anim="stagger">
+            <div class="myth"><i>×</i><span>我就是不够自律</span></div><div class="myth"><i>×</i><span>我又三分钟热度</span></div>
+            <div class="myth"><i>×</i><span>别人可以，我为什么不行</span></div><div class="myth"><i>→</i><span>下一步是不是太难发生？</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footline"><span>换一个问题，往往就能换一条路</span><span class="page-no">02 / 10</span></div>
+    <aside class="notes"><p>当一项计划中断时，我们最常见的反应是给自己下结论：“我不自律”“我没有毅力”。这些评价看起来是在反省，实际上没有提供任何下一步。</p><p>更有用的问题是：为什么这件事这么难开始？为什么做完以后，我没有看见任何进步？为什么每一次行动都需要重新做一大堆决定？</p><p>从责怪自己转向检查系统，不是逃避责任。恰恰相反，这是把责任放回真正能够改变的地方。</p></aside>
+  </section>
+
+  <section class="slide" data-title="兴趣只是启动键">
+    <div class="topline"><div class="brand"><i></i>02 · START</div><div>Interest ≠ Endurance</div></div>
+    <div class="content">
+      <div class="split">
+        <div class="copy">
+          <p class="eyebrow">汽车比喻 · 第一步</p>
+          <h2><span class="accent">兴趣</span>像汽车的启动键。</h2>
+          <p class="lede">它让发动机开始运转，却不能保证汽车一直向前。</p>
+          <blockquote class="quote">喜欢一件事，<br>不等于能够长期做好一件事。</blockquote>
+        </div>
+        <figure class="figure"><img src="assets/illustrations/02-interest-start-button.png" alt="小旅人按下兴趣启动键，但汽车油表接近空"><span class="caption">兴趣负责出发，不负责全部旅程</span></figure>
+      </div>
+    </div>
+    <div class="footline"><span>启动是一瞬间，持续是一套系统</span><span class="page-no">03 / 10</span></div>
+    <aside class="notes"><p>兴趣当然重要。它像启动键，让我们愿意接触一个新领域，打开一本书，或者第一次尝试写代码。</p><p>但启动键只能点火。汽车能不能继续走，还取决于有没有能源、道路是不是清楚、驾驶过程能不能得到反馈。我们之所以会“三分钟热度”，不一定是兴趣是假的，而可能是在兴趣消退以前，还没有获得任何值得继续的证据。</p><p>所以，不要要求兴趣承担它做不到的工作。兴趣负责把你带到起点，接下来要靠系统接手。</p></aside>
+  </section>
+
+  <section class="slide" data-title="意志力不适合长期供能">
+    <div class="topline"><div class="brand"><i></i>03 · OVERHEAT</div><div>Willpower is for hard moments</div></div>
+    <div class="content">
+      <div class="split reverse">
+        <figure class="figure"><img src="assets/illustrations/03-willpower-overheat.png" alt="小旅人只靠意志力猛踩油门，汽车出现长期过热"><span class="caption">短期冲刺有效，长期硬撑会过热</span></figure>
+        <div class="copy">
+          <p class="eyebrow">汽车比喻 · 第二步</p>
+          <h2>只靠意志力，<br>就像一直<span class="accent">猛踩油门</span>。</h2>
+          <p class="lede">它能帮助我们冲过困难路段，却不适合成为整段旅程唯一的能源。</p>
+          <div class="cards" data-anim="stagger"><div class="card"><b>适合</b><p>启动困难任务、穿过短期阻力。</p></div><div class="card"><b>不适合</b><p>每天在同一个入口重新逼迫自己。</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="footline"><span>别把应急能力，当成日常能源</span><span class="page-no">04 / 10</span></div>
+    <aside class="notes"><p>我不是说意志力没有用。它很有用，尤其是在你需要通过一个困难路段的时候。</p><p>问题在于，我们常常把应急能力当成日常能源。每天都要求自己重新做决定、重新抵抗诱惑、重新鼓足勇气，当然会累。就像汽车一直踩着高转速上坡，短时间能冲过去，长期却容易过热。</p><p>真正稳的做法，是把意志力留给关键时刻，把日常行动交给清晰入口、低阻力环境和及时反馈。</p></aside>
+  </section>
+
+  <section class="slide" data-title="看得见的进步是燃料">
+    <div class="topline"><div class="brand"><i></i>04 · FUEL</div><div>Visible progress</div></div>
+    <div class="content">
+      <div class="split">
+        <div class="copy">
+          <p class="eyebrow">汽车比喻 · 第三步</p>
+          <h2>人的“汽油”，是<span class="accent">看得见的进步</span>。</h2>
+          <p class="lede">成就感不是夸奖自己，而是大脑收到了一份真实证据：我正在接近目标。</p>
+          <div class="cards" data-anim="stagger"><div class="card"><b>一小节</b><p>不是“一口气学完整门课”。</p></div><div class="card"><b>一个问题</b><p>不是“彻底掌握整个领域”。</p></div><div class="card"><b>一个作品</b><p>让知识变成能被看见的结果。</p></div><div class="card"><b>一次记录</b><p>让微小进步不再悄悄消失。</p></div></div>
+        </div>
+        <figure class="figure"><img src="assets/illustrations/04-progress-fuel-station.png" alt="小旅人在成就感加油站用读完一篇、解决一道题和完成小项目为汽车加油"><span class="caption">完成一小步，油表就向前一点</span></figure>
+      </div>
+    </div>
+    <div class="footline"><span>反馈要在热情耗尽之前出现</span><span class="page-no">05 / 10</span></div>
+    <aside class="notes"><p>这里我想把“成就感”说得更准确一点。它不是空泛地告诉自己“你好棒”，而是完成以后真的看见了结果。</p><p>读完一篇、解决一道题、做出一个小项目，这些都在告诉大脑：投入是有回报的。这个反馈越清楚、越及时，我们越愿意继续。</p><p>所以设计学习时，不要只问目标够不够大。还要问：我最早什么时候能够看见进步？如果答案是三个月以后，那这辆车很可能在到达加油站以前就停了。</p></aside>
+  </section>
+
+  <section class="slide" data-title="把成就感变成良性循环">
+    <div class="topline"><div class="brand"><i></i>05 · LOOP</div><div>A self-reinforcing system</div></div>
+    <div class="content">
+      <div class="split reverse">
+        <figure class="figure"><img src="assets/illustrations/05-positive-learning-loop.png" alt="汽车沿着兴趣启动、完成一小步、看见进步、愿意继续的道路循环向上"><span class="caption">成就感不是终点，而是下一次行动的燃料</span></figure>
+        <div class="copy">
+          <p class="eyebrow">核心模型</p>
+          <h2>让一次行动，<br>自然长出<span class="accent">下一次行动</span>。</h2>
+          <div class="formula" data-anim="stagger"><span class="step">兴趣启动</span><span class="arrow">→</span><span class="step">完成一小步</span><span class="arrow">→</span><span class="step">看见进步</span><span class="arrow">→</span><span class="step">愿意继续</span></div>
+          <p class="lede" style="margin-top:24px">稳定以后，再逐渐提高难度。小目标不是降低理想，而是在为更大的理想建立发动机。</p>
+        </div>
+      </div>
+    </div>
+    <div class="footline"><span>先让循环转起来，再让目标变大</span><span class="page-no">06 / 10</span></div>
+    <aside class="notes"><p>现在把前面的零件连起来。兴趣负责启动，第一步要足够小，小到你能在失去热情以前完成它。完成以后立刻留下反馈，让进步被自己看见。</p><p>成就感出现以后，我们不是停下来庆祝，而是让它成为下一次行动的燃料。随着这个循环重复，能力增长，挑战也可以慢慢升级。</p><p>所以小目标并不是降低理想。它真正的作用，是先把循环转起来。没有循环，再大的目标只是墙上的口号；循环稳定以后，目标才有机会越走越远。</p></aside>
+  </section>
+
+  <section class="slide" data-title="先把第一步缩小">
+    <div class="topline"><div class="brand"><i></i>06 · FIRST MILE</div><div>Start before motivation fades</div></div>
+    <div class="content">
+      <div class="split">
+        <div class="copy">
+          <p class="eyebrow">七天微实验</p>
+          <h2>第一步要小到，<br>你几乎<span class="accent">没有理由拒绝</span>。</h2>
+          <div class="action-panel"><b>今天就这样设计：</b><ol><li>选择一件你想持续的事。</li><li>把第一次行动缩小到 10–25 分钟。</li><li>完成后立刻留下一个可见记录。</li><li>连续七天，只观察循环，不加码。</li></ol></div>
+        </div>
+        <figure class="figure"><img src="assets/illustrations/08-seven-day-experiment.png" alt="小旅人在手账中记录七天微实验的第一步"><span class="caption">只做一小步 · 立刻记录 · 连续七天</span></figure>
+      </div>
+    </div>
+    <div class="footline"><span>让反馈先发生，让难度晚一点到来</span><span class="page-no">07 / 10</span></div>
+    <aside class="notes"><p>如果你想把这节课变成行动，我建议做一个七天微实验。不要重新规划人生，只挑一件你想持续的小事。</p><p>把第一次行动缩小到十到二十五分钟，完成后立刻留下记录。这个记录可以是一个勾、一张截图、一段一百字的总结，关键是让进步不要悄悄消失。</p><p>七天之内先不要加码，也不要评价自己厉不厉害。我们只观察一件事：这个行动循环能不能稳定发生。先让汽车顺利上路，再讨论要不要加速。</p></aside>
+  </section>
+
+  <section class="slide" data-title="改变环境，而不只改变自己">
+    <div class="topline"><div class="brand"><i></i>07 · REDESIGN</div><div>Make the next step obvious</div></div>
+    <div class="content">
+      <div class="split reverse">
+        <figure class="figure"><img src="assets/illustrations/06-environment-redesign.png" alt="全靠忍耐的复杂道路与降低阻力的清晰道路对比"><span class="caption">把正确选择放到最容易看见的位置</span></figure>
+        <div class="copy">
+          <p class="eyebrow">不要只改变自己</p>
+          <h2>环境设计的目的，<br>是减少每一次<span class="accent">重新挣扎</span>。</h2>
+          <div class="cards" data-anim="stagger"><div class="card"><b>让入口可见</b><p>材料提前打开，下一步写在眼前。</p></div><div class="card"><b>让选择变少</b><p>不要每次都重新决定学什么。</p></div><div class="card"><b>让反馈变快</b><p>把结果拆成当天能完成的作品。</p></div><div class="card"><b>让正确成为默认</b><p>降低行动前的摩擦，而不是增加口号。</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="footline"><span>改变道路，不是否定驾驶者</span><span class="page-no">08 / 10</span></div>
+    <aside class="notes"><p>很多人把改变理解成“我要变成一个更强的人”。但是同一个人，放在不同的环境里，结果可能完全不同。</p><p>真正有效的环境设计很朴素：让入口更明显，让选择更少，让反馈更快，让正确行为成为默认选项。它不是替你做决定，而是减少那些没有价值的反复挣扎。</p><p>这里也有一条边界：顺着人性是为了帮助自己做出想做的选择，不是用诱导、恐惧或成瘾机制替别人决定。好的设计保留自主，坏的设计剥夺自主。</p></aside>
+  </section>
+
+  <section class="slide" data-title="我的经历：医生跨专业学习AI">
+    <div class="topline"><div class="brand"><i></i>08 · PERSONAL FIELD NOTE</div><div>Physician learning AI</div></div>
+    <div class="content">
+      <div class="split">
+        <div class="copy">
+          <p class="eyebrow">不是持续亢奋，而是持续获得反馈</p>
+          <h2>我能继续学习 AI，<br>不是因为每天都<span class="accent">充满动力</span>。</h2>
+          <blockquote class="quote">是一个真实问题、一个小项目、一次能够运行的结果，让我愿意继续走向下一段路。</blockquote>
+          <p class="lede">临床经验提出问题，AI学习提供工具，做出成果带来新的成就感——循环因此扩大。</p>
+        </div>
+        <figure class="figure"><img src="assets/illustrations/07-physician-learning-ai.png" alt="医生从临床问题出发学习AI并做出成果"><span class="caption">把知识变成作品，反馈就会变得真实</span></figure>
+      </div>
+    </div>
+    <div class="footline"><span>真实问题 → 小步学习 → 做出成果</span><span class="page-no">09 / 10</span></div>
+    <aside class="notes"><p>这一页是我的真实感受。作为医生跨专业学习 AI，我并不是每天都很有动力。很多时候，工作结束以后，我也会累，也会觉得陌生。</p><p>真正让我继续的，往往不是一句“你要坚持”，而是我用刚学到的东西解决了一个具体问题，做出了一个能运行的小项目，或者把复杂内容讲给初学者听懂。</p><p>当知识变成作品，进步就不再抽象。这个结果带来新的成就感，也让我愿意进入下一个更大的挑战。我的学习不是一条直线，更像一圈圈不断扩大的循环。</p></aside>
+  </section>
+
+  <section class="slide" data-title="让正确的事情自然发生">
+    <div class="topline"><div class="brand"><i></i>09 · TAKEAWAY</div><div>Build the system</div></div>
+    <div class="content">
+      <div class="final-grid">
+        <div class="copy">
+          <p class="eyebrow">最后，记住四句话</p>
+          <h2>不要逼自己坚持。<br>要让自己<span class="accent">愿意继续</span>。</h2>
+          <div class="final-lines" data-anim="stagger"><div class="final-line"><span>01</span><b>兴趣让你出发</b></div><div class="final-line"><span>02</span><b>成就感让你续航</b></div><div class="final-line"><span>03</span><b>环境帮助你减少阻力</b></div><div class="final-line"><span>04</span><b>系统让你真正走得更远</b></div></div>
+        </div>
+        <div>
+          <figure class="figure"><img src="assets/illustrations/05-positive-learning-loop.png" alt="学习循环沿着道路不断向上"><span class="caption">先让循环转起来，再让目标变大</span></figure>
+          <blockquote class="quote" style="margin-bottom:0">成熟不是越来越能忍，<br>而是越来越懂得怎样让正确的事情自然发生。</blockquote>
+        </div>
+      </div>
+    </div>
+    <div class="footline"><span>Design Better Choices, Not a Stronger Will</span><span class="page-no">10 / 10</span></div>
+    <aside class="notes"><p>最后，把整节课收回到四句话。兴趣让你出发，成就感让你续航，环境帮助你减少阻力，系统让你真正走得更远。</p><p>意志力依然重要，但它不应该承担全部工作。当你发现自己又在硬撑时，不妨停下来检查：下一步能不能更小？反馈能不能更快？正确的入口能不能更明显？</p><p>成熟不是越来越能忍，而是越来越懂得怎样让正确的事情自然发生。希望从今天开始，我们少一点自我责备，多一点对行动系统的认真设计。</p></aside>
+  </section>
+</main>
+
+<div class="hint">← → 翻页 · F 全屏 · S 讲者提示 · O 总览 · P 打印</div>
+<div class="controls" aria-label="课件控制">
+  <button class="control" id="prev" title="上一页" aria-label="上一页">←</button>
+  <button class="control" id="overviewBtn" title="总览" aria-label="打开总览">⊞</button>
+  <button class="control" id="notesBtn" title="讲者提示" aria-label="打开讲者提示">S</button>
+  <button class="control" id="next" title="下一页" aria-label="下一页">→</button>
+</div>
+<div class="progress"><span id="progressBar"></span></div>
+<aside class="drawer" id="drawer" aria-label="讲者提示">
+  <div><h4>Speaker cues · 当前页</h4><div class="script" id="script"></div></div>
+  <div class="next"><h4>Next · 下一页</h4><h3 id="nextTitle"></h3><p id="nextCue"></p><div class="timer" id="timer">00:00</div><button class="control" id="resetTimer" title="计时归零">↺</button></div>
+</aside>
+<div class="overview" id="overview" aria-label="页面总览"></div>
+
+<script>
+(()=>{
+  const slides=[...document.querySelectorAll('.slide')],bar=document.getElementById('progressBar');
+  const drawer=document.getElementById('drawer'),overview=document.getElementById('overview');
+  const script=document.getElementById('script'),nextTitle=document.getElementById('nextTitle'),nextCue=document.getElementById('nextCue');
+  let index=Math.max(0,Math.min(slides.length-1,(parseInt(location.hash.replace('#/',''),10)||1)-1));
+  let touchX=0,start=Date.now(),timerId;
+  function updateTimer(){const s=Math.floor((Date.now()-start)/1000);document.getElementById('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+  function renderOverview(){overview.innerHTML=slides.map((s,i)=>`<button class="thumb ${i===index?'current':''}" data-i="${i}"><span>${String(i+1).padStart(2,'0')} / ${slides.length}</span><b>${s.dataset.title}</b><small>点击进入此页</small></button>`).join('');overview.querySelectorAll('.thumb').forEach(b=>b.onclick=()=>{go(+b.dataset.i);overview.classList.remove('open')})}
+  function refreshNotes(){const n=slides[index].querySelector('.notes');script.innerHTML=n?n.innerHTML:'<p>本页没有讲者提示。</p>';const next=slides[Math.min(index+1,slides.length-1)];nextTitle.textContent=next.dataset.title;const p=next.querySelector('.notes p');nextCue.textContent=p?p.textContent:'已经是最后一页。'}
+  function go(i){index=(i+slides.length)%slides.length;slides.forEach((s,n)=>s.classList.toggle('is-active',n===index));bar.style.width=((index+1)/slides.length*100)+'%';history.replaceState(null,'','#/'+(index+1));refreshNotes();renderOverview();document.title=(index===0?'你不是缺少意志力｜公开课':slides[index].dataset.title+'｜公开课')}
+  function toggleNotes(){drawer.classList.toggle('open');refreshNotes()}
+  function toggleOverview(){overview.classList.toggle('open');renderOverview()}
+  document.getElementById('prev').onclick=()=>go(index-1);document.getElementById('next').onclick=()=>go(index+1);
+  document.getElementById('notesBtn').onclick=toggleNotes;document.getElementById('overviewBtn').onclick=toggleOverview;
+  document.getElementById('resetTimer').onclick=()=>{start=Date.now();updateTimer()};
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(index+1)}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(index-1)}
+    else if(e.key==='Home')go(0);else if(e.key==='End')go(slides.length-1);
+    else if(e.key.toLowerCase()==='s'||e.key.toLowerCase()==='n')toggleNotes();
+    else if(e.key.toLowerCase()==='o')toggleOverview();
+    else if(e.key.toLowerCase()==='f')document.documentElement.requestFullscreen?.();
+    else if(e.key.toLowerCase()==='p')print();
+    else if(e.key==='Escape'){drawer.classList.remove('open');overview.classList.remove('open')}
+  });
+  addEventListener('touchstart',e=>touchX=e.changedTouches[0].screenX,{passive:true});
+  addEventListener('touchend',e=>{const d=e.changedTouches[0].screenX-touchX;if(Math.abs(d)>55)go(index+(d<0?1:-1))},{passive:true});
+  document.addEventListener('click',e=>{if(e.target.closest('button,a'))return;const x=e.clientX/innerWidth;if(x>.82)go(index+1);else if(x<.18)go(index-1)});
+  timerId=setInterval(updateTimer,1000);go(index);updateTimer();
+})();
+</script>
+</body>
+</html>

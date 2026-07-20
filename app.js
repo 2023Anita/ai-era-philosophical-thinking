@@ -14,6 +14,7 @@ const renderCourses = (courses) => {
     return `
       <article class="course-card">
         <div class="course-index"><span>COURSE ${number}</span><span class="course-status">${escapeHtml(course.statusLabel ?? "课程入口")}</span></div>
+        <figure class="course-cover"><img src="${escapeHtml(course.cover)}" alt="${escapeHtml(course.coverAlt ?? course.title)}" /></figure>
         <h3>${escapeHtml(course.title)}</h3>
         <p>${escapeHtml(course.description)}</p>
         <div class="tag-list">${tags}</div>
